@@ -3,13 +3,14 @@ from Board import Board
 
 class GraphicalBoard():
 
-    def __init__(self, board: Board, block_size, snake_speed, bg_color, grid_color, snake_color, clock, frame_rate ) -> None:
+    def __init__(self, board: Board, block_size, snake_speed, bg_color, grid_color, snake_color, food_color, clock, frame_rate ) -> None:
         self.board = board
         self.block_size = block_size
         self.snake_speed = snake_speed
         self.bg_color = bg_color
         self.grid_color = grid_color
         self.snake_color = snake_color
+        self.food_color = food_color
         self.clock = clock
         self.frame_rate = frame_rate
 
@@ -49,6 +50,8 @@ class GraphicalBoard():
         tail_direction = [ self.board.tail.x - (self.tail[0] // self.block_size) ,  self.board.tail.y - (self.tail[1] // self.block_size)]
         self.tail_velocity = [num * self.snake_speed for num in tail_direction]
 
+    def draw_food(self):
+        pygame.draw.rect(self.screen, self.food_color, (self.board.food_position[0] * self.block_size, self.board.food_position[1] * self.block_size, self.block_size, self.block_size))    
 
     def move_snake(self):  
         head_target = [self.board.head.x * self.block_size, self.board.head.y * self.block_size]        
@@ -56,8 +59,8 @@ class GraphicalBoard():
         
         while self.head[0] != head_target[0] or self.head[1] != head_target[1]:
             delta_time = self.clock.tick(self.frame_rate) / 1000.0
-            print(self.head, self.tail)
-            print(self.head_velocity, self.tail_velocity)
+            # print(self.head, self.tail)
+            # print(self.head_velocity, self.tail_velocity)
             def helper(velocity, position, target):
                 if velocity[0] != 0:  
                     position[0] += velocity[0] * delta_time
@@ -74,6 +77,15 @@ class GraphicalBoard():
 
             self.screen.fill(self.bg_color)          
             self.draw_grid()
-            pygame.draw.rect(self.screen, self.snake_color, (self.head[0], self.head[1], self.block_size, self.block_size))
+            self.draw_food()
+                        
             pygame.draw.rect(self.screen, self.snake_color, (self.tail[0], self.tail[1], self.block_size, self.block_size))
+
+            current = self.board.tail.next
+
+            while current != self.board.head:
+                pygame.draw.rect(self.screen, self.snake_color, (current.x * self.block_size, current.y * self.block_size, self.block_size, self.block_size))
+                current = current.next
+            
+            pygame.draw.rect(self.screen, self.snake_color, (self.head[0], self.head[1], self.block_size, self.block_size))
             pygame.display.flip()

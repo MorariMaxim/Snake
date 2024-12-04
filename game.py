@@ -4,14 +4,14 @@ from GraphicalBoard import *
 import pygame
 class Game:
             
-    def __init__(self, board_rows, board_columns, board_obstacles, block_size, snake_speed, bg_color, grid_color, snake_color) -> None:
+    def __init__(self, board_rows, board_columns, board_obstacles, block_size, snake_speed, bg_color, grid_color, snake_color, food_color) -> None:
                 
         self.board = Board(board_rows, board_columns, board_obstacles)
         
         self.score = 0
         self.clock = pygame.time.Clock()
         self.frame_rate = 60
-        self.graphical_board = GraphicalBoard(self.board, block_size, snake_speed, bg_color, grid_color, snake_color, self.clock, self.frame_rate)
+        self.graphical_board = GraphicalBoard(self.board, block_size, snake_speed, bg_color, grid_color, snake_color, food_color, self.clock, self.frame_rate)
         
     def start_game(self):
         
@@ -51,5 +51,5 @@ class Game:
                 
 
 
-game = Game(30,40, [],20,200,(30, 30, 30),(50, 50, 50),(0, 255, 0))
+game = Game(10,50, [],20,200,(30, 30, 30),(50, 50, 50),(0, 255, 0),(255, 0, 0))
 game.start_game()
