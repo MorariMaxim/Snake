@@ -19,6 +19,13 @@ class Board:
         self.snake_length = 1
         self.create_linked_list()
 
+    def reset(self):
+        self.create_board()
+        self.place_food()
+        self.snake_length = 1
+        self.create_linked_list()
+        self.direction = [0, 0]
+    
     def create_board(self):
         
         self.matrix = [[0 for _ in range(self.columns)] for _ in range(self.rows)]

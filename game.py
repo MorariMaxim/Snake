@@ -5,13 +5,43 @@ import pygame
 class Game:
             
     def __init__(self, board_rows, board_columns, board_obstacles, block_size, snake_speed, bg_color, grid_color, snake_color, food_color) -> None:
-                
-        self.board = Board(board_rows, board_columns, board_obstacles)
+        pygame.init()
         
+        self.board_rows = board_rows
+        self.board_columns = board_columns
+        self.board_obstacles = board_obstacles
+        self.snake_speed = snake_speed
+        self.bg_color = bg_color
+        self.grid_color = grid_color
+        self.snake_color = snake_color
+        self.food_color = food_color
+        
+        self.font = pygame.font.Font(None, 36)
+        self.text_color = (255, 255, 255)
+                
         self.score = 0
         self.clock = pygame.time.Clock()
         self.frame_rate = 60
-        self.graphical_board = GraphicalBoard(self.board, block_size, snake_speed, bg_color, grid_color, snake_color, food_color, self.clock, self.frame_rate)
+        self.block_size = block_size
+        
+        self.best_score = 0
+        self.current_score = 0
+        
+        self.score_height = 50
+        self.screen_width = board_columns * self.block_size 
+        self.screen_height = self.board_rows * self.block_size + self.score_height
+        
+
+        self.init_boards()
+        
+    def init_boards(self):
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        grid_rect = pygame.Rect(0, self.score_height, self.screen_width, self.screen_height - self.score_height)
+        self.board_screen = self.screen.subsurface(grid_rect)
+        self.score_screen = self.screen.subsurface(pygame.Rect(0, 0, self.screen_width, self.score_height))
+        
+        self.board = Board(self.board_rows, self.board_columns, self.board_obstacles)
+        self.graphical_board = GraphicalBoard(self.board, self.block_size, self.snake_speed, self.bg_color, self.grid_color, self.snake_color, self.food_color, self.board_screen, self.clock, self.frame_rate)
         
     def start_game(self):
         
@@ -19,17 +49,29 @@ class Game:
         
         self.game_loop()
 
-   
+    def draw_score(self, current_score, best_score):
+        self.score_screen.fill(self.graphical_board.bg_color)
+        text_surface = self.font.render(f"Score: {current_score} Best: {best_score}", True, self.text_color)
+        text_rect = text_surface.get_rect(center=self.score_screen.get_rect().center)
+        self.score_screen.blit(text_surface, text_rect)
+    
+    def reset_game(self):
+        self.current_score = 0
+        
+        self.board.reset() 
+
+        
     
     def game_loop(self):
         
-        pygame.init()
         running = True
-        direction_input_queue = []
-            
+        direction_input_queue = [] 
+        
         while running:                    
             
-            delta_time = self.clock.tick(self.frame_rate) / 1000.0      
+            self.draw_score(self.current_score, self.best_score)
+            # delta_time = self.clock.tick(self.frame_rate) / 1000.0      
+            delta_time = self.clock.tick() / 1000.0 
 
             
                 
@@ -58,16 +100,27 @@ class Game:
                     break
                     
             over, eaten = self.graphical_board.move(delta_time)
+            if eaten:
+                self.current_score += 1
+                
+            self.best_score = max(self.best_score, self.current_score)
 
             if over:
-                while running: 
+                condition = True
+                while condition: 
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
+                            condition = False
                             running = False
                             break
-                running = False 
+                        elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                            print("reset")
+                            self.reset_game()
+                            condition = False
+                            break   
+                print("out")
                 
 
 
-game = Game(20, 20, [],20,300,(30, 30, 30),(50, 50, 50),(0, 255, 0),(255, 0, 0))
+game = Game(20, 20, [(0,0), (5,5)],20,300,(30, 30, 30),(50, 50, 50),(0, 255, 0),(255, 0, 0))
 game.start_game()

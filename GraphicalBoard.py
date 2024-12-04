@@ -3,7 +3,7 @@ from Board import Board
 
 class GraphicalBoard():
 
-    def __init__(self, board: Board, block_size, snake_speed, bg_color, grid_color, snake_color, food_color, clock, frame_rate ) -> None:
+    def __init__(self, board: Board, block_size, snake_speed, bg_color, grid_color, snake_color, food_color, screen, clock, frame_rate ) -> None:
         self.board = board
         self.block_size = block_size
         self.snake_speed = snake_speed
@@ -11,17 +11,17 @@ class GraphicalBoard():
         self.grid_color = grid_color
         self.snake_color = snake_color
         self.food_color = food_color
+        self.screen = screen
         self.clock = clock
         self.frame_rate = frame_rate
-
-        self.screen_width = self.board.columns * self.block_size
-        self.screen_height = self.board.rows * self.block_size
-        
-        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-        
+        self.screen_width = screen.get_width()
+        self.screen_height = screen.get_height()
+        self.obstacle_color = (0, 0, 255)
+                
         self.head_velocity = [0, 0]
         self.tail_velocity = [0, 0]
-
+ 
+        
     def draw_grid(self):
         for row in range(self.board.rows):
             pygame.draw.line(self.screen, self.grid_color, (0, row * self.block_size), (self.screen_width, row * self.block_size))
@@ -34,8 +34,8 @@ class GraphicalBoard():
         
         over, eaten = self.board.move()
                         
-        if over:
-            return over, eaten
+        # if over:
+        #     return over, eaten
         
         self.set_velocities()
         
@@ -53,11 +53,15 @@ class GraphicalBoard():
     def draw_food(self):
         pygame.draw.rect(self.screen, self.food_color, (self.board.food_position[0] * self.block_size, self.board.food_position[1] * self.block_size, self.block_size, self.block_size))    
 
+    def draw_obstacles(self):
+        for obstacle in self.board.obstacles:
+            pygame.draw.rect(self.screen, self.obstacle_color, (obstacle[0] * self.block_size, obstacle[1] * self.block_size, self.block_size, self.block_size))
+    
     def move_snake(self):  
         head_target = [self.board.head.x * self.block_size, self.board.head.y * self.block_size]        
         tail_target = [self.board.tail.x * self.block_size,self.board.tail.y * self.block_size]
         
-        while self.head[0] != head_target[0] or self.head[1] != head_target[1]:
+        while True:
             delta_time = self.clock.tick(self.frame_rate) / 1000.0
             # print(self.head, self.tail)
             # print(self.head_velocity, self.tail_velocity)
@@ -78,7 +82,7 @@ class GraphicalBoard():
             self.screen.fill(self.bg_color)          
             self.draw_grid()
             self.draw_food()
-                        
+            self.draw_obstacles()
             pygame.draw.rect(self.screen, self.snake_color, (self.tail[0], self.tail[1], self.block_size, self.block_size))
 
             current = self.board.tail
@@ -89,3 +93,8 @@ class GraphicalBoard():
             
             pygame.draw.rect(self.screen, self.snake_color, (self.head[0], self.head[1], self.block_size, self.block_size))
             pygame.display.flip()
+            
+            if self.head[0] == head_target[0] and self.head[1] == head_target[1]:
+                break
+            
+                

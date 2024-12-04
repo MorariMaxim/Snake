@@ -1,60 +1,51 @@
 import pygame
-import sys
 
 # Initialize Pygame
 pygame.init()
 
-# Screen dimensions and setup
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Button and Score Display")
+# Screen dimensions
+screen_width, screen_height = 800, 600
+block_size = 40  # Example block size
 
 # Colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+bg_color = (30, 30, 30)  # Dark background
+grid_color = (200, 200, 200)  # Light grid
+text_color = (255, 255, 255)  # White text
 
-# Font
-font = pygame.font.Font(None, 40)
+# Screen setup
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Grid with Score")
+font = pygame.font.Font(None, 36)  # Define font
 
-# Score
+# Board settings
+rows, columns = 15, 20  # Example dimensions
 score = 0
 
-# Button
-button_color = BLUE
-button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 100)  # Centered button
+def draw_grid():
+    for row in range(rows):
+        pygame.draw.line(screen, grid_color, (0, row * block_size), (screen_width, row * block_size))
+    for col in range(columns):
+        pygame.draw.line(screen, grid_color, (col * block_size, 0), (col * block_size, screen_height))
 
-# Function to draw text
-def draw_text(surface, text, font, color, x, y):
-    text_obj = font.render(text, True, color)
-    text_rect = text_obj.get_rect(center=(x, y))
-    surface.blit(text_obj, text_rect)
+def draw_score():
+    text_surface = font.render(f"Score: {score}", True, text_color)
+    text_rect = text_surface.get_rect(center=(screen_width // 2, 20))  # Position at the top-center
+    screen.blit(text_surface, text_rect)
 
 # Game loop
 running = True
 while running:
-    screen.fill(WHITE)  # Clear screen
-
-    # Draw button
-    pygame.draw.rect(screen, button_color, button_rect)
-    draw_text(screen, "Click Me", font, WHITE, button_rect.centerx, button_rect.centery)
-
-    # Draw score
-    draw_text(screen, f"Score: {score}", font, BLACK, WIDTH // 2, 50)
-
-    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if button_rect.collidepoint(event.pos):  # Check if button clicked
-                score += 1  # Increment score
+
+    # Clear screen and draw everything
+    screen.fill(bg_color)
+    draw_score()
+    draw_grid()
 
     # Update display
     pygame.display.flip()
 
 # Quit Pygame
 pygame.quit()
-sys.exit()
