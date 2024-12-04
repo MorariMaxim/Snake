@@ -30,19 +30,22 @@ class Game:
 
             
                 
-            
+            last_direction_input = None
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:                
                     if event.key == pygame.K_UP:
-                        self.board.set_direction("up")
+                        last_direction_input = "up"                        
                     elif event.key == pygame.K_DOWN:
-                        self.board.set_direction("down")
+                        last_direction_input = "down"
                     elif event.key == pygame.K_LEFT:
-                        self.board.set_direction("left")
+                        last_direction_input = "left"
                     elif event.key == pygame.K_RIGHT:
-                        self.board.set_direction("right")
+                        last_direction_input = "right"
+            
+            if last_direction_input:
+                self.board.set_direction(last_direction_input)
      
             over, eaten = self.graphical_board.move(delta_time)
 
@@ -51,5 +54,5 @@ class Game:
                 
 
 
-game = Game(10,50, [],20,200,(30, 30, 30),(50, 50, 50),(0, 255, 0),(255, 0, 0))
+game = Game(10,10, [],20,200,(30, 30, 30),(50, 50, 50),(0, 255, 0),(255, 0, 0))
 game.start_game()

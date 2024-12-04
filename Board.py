@@ -56,8 +56,8 @@ class Board:
         
         if self.head.x + self.direction[0] < 0 or self.head.x + self.direction[0] >= self.columns or \
             self.head.y + self.direction[1] < 0 or self.head.y + self.direction[1] >= self.rows or\
-            self.matrix[self.head.y + self.direction[1]][self.head.x + self.direction[0]] == -1 :
-                #or\ self.matrix[self.head.y + self.direction[1]][self.head.x + self.direction[0]] == 1
+            self.matrix[self.head.y + self.direction[1]][self.head.x + self.direction[0]] == -1 or\
+            self.matrix[self.head.y + self.direction[1]][self.head.x + self.direction[0]] == 1:
             return True, None
 
         temp = self.head
@@ -70,6 +70,7 @@ class Board:
             self.place_food()   
             self.snake_length += 1
         else:
+            self.matrix[self.tail.y][self.tail.x] = 0
             self.tail = self.tail.next
             if not self.tail.next:
                 self.tail.next = self.head

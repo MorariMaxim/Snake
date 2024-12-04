@@ -81,7 +81,7 @@ class GraphicalBoard():
                         
             pygame.draw.rect(self.screen, self.snake_color, (self.tail[0], self.tail[1], self.block_size, self.block_size))
 
-            current = self.board.tail.next
+            current = self.board.tail
 
             while current != self.board.head:
                 pygame.draw.rect(self.screen, self.snake_color, (current.x * self.block_size, current.y * self.block_size, self.block_size, self.block_size))
