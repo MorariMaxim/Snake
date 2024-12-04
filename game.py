@@ -17,6 +17,7 @@ class Game:
         
         self.board.set_direction((0, 1))
         
+        self.game_loop()
 
     def game_loop(self):
         
@@ -27,6 +28,9 @@ class Game:
             
             delta_time = self.clock.tick(self.frame_rate) / 1000.0      
 
+            
+                
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -39,8 +43,13 @@ class Game:
                         self.board.set_direction("left")
                     elif event.key == pygame.K_RIGHT:
                         self.board.set_direction("right")
-                        
+     
             over, eaten = self.graphical_board.move(delta_time)
 
             if over:
-                running = False                
+                running = False
+                
+
+
+game = Game(30,40, [],20,200,(30, 30, 30),(50, 50, 50),(0, 255, 0))
+game.start_game()

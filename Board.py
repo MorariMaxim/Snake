@@ -13,7 +13,7 @@ class Board:
         self.rows = rows
         self.columns = columns
         self.obstacles = obstacles
-        
+        self.direction = [0, 0]
         self.create_board()
         
         self.create_linked_list()
@@ -35,17 +35,18 @@ class Board:
         
         self.create_head()
         self.tail = self.head
+        self.tail.next = self.head  
         
     def set_direction(self, direction):
         
         if direction == "up" and self.direction[1] == 0:    
-            self.direction = (0, -1)
+            self.direction = [0, -1]
         elif direction == "down" and self.direction[1] == 0:
-            self.direction = (0, 1)
+            self.direction = [0, 1]
         elif direction == "left" and self.direction[0] == 0:
-            self.direction = (-1, 0)
+            self.direction = [-1, 0]
         elif direction == "right" and self.direction[0] == 0:
-            self.direction = (1, 0)
+            self.direction = [1, 0]
                 
 
     def move(self):
@@ -53,7 +54,7 @@ class Board:
         if self.head.x + self.direction[0] < 0 or self.head.x + self.direction[0] >= self.rows or \
             self.head.y + self.direction[1] < 0 or self.head.y + self.direction[1] >= self.columns or\
             self.matrix[self.head.x + self.direction[0]][self.head.y + self.direction[1]] == -1:
-            return False, None
+            return True, None
 
         temp = self.head
         self.head = self.Node(self.head.x + self.direction[0], self.head.y + self.direction[1])
@@ -65,11 +66,13 @@ class Board:
             self.place_food()                                
         else:
             self.tail = self.tail.next
+            if not self.tail.next:
+                self.tail.next = self.head
 
         
         self.matrix[self.head.x][self.head.y] = 1
         
-        return True, eaten
+        return False, eaten
         
     def place_food(self):
         

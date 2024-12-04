@@ -46,7 +46,7 @@ class GraphicalBoard():
     def set_velocities(self):
         self.head_velocity = [num * self.snake_speed for num in self.board.direction]
         
-        tail_direction = [self.board.tail.next.x - self.board.tail.x, self.board.tail.next.y - self.board.tail.y]
+        tail_direction = [ self.board.tail.x - (self.tail[0] // self.block_size) ,  self.board.tail.y - (self.tail[1] // self.block_size)]
         self.tail_velocity = [num * self.snake_speed for num in tail_direction]
 
 
@@ -56,7 +56,8 @@ class GraphicalBoard():
         
         while self.head[0] != head_target[0] or self.head[1] != head_target[1]:
             delta_time = self.clock.tick(self.frame_rate) / 1000.0
-
+            print(self.head, self.tail)
+            print(self.head_velocity, self.tail_velocity)
             def helper(velocity, position, target):
                 if velocity[0] != 0:  
                     position[0] += velocity[0] * delta_time
