@@ -65,7 +65,7 @@ class Game:
     def game_loop(self):
         
         running = True
-        direction_input_queue = [] 
+        direction_input_queue = [ ] 
         
         while running:                    
             
@@ -119,8 +119,20 @@ class Game:
                             condition = False
                             break   
                 print("out")
-                
 
 
-game = Game(20, 20, [(0,0), (5,5)],20,300,(30, 30, 30),(50, 50, 50),(0, 255, 0),(255, 0, 0))
+
+
+rows = 20
+cols = 20
+obstacles = [(0,0), (5,5)]
+if len(sys.argv) > 1:
+    with open(sys.argv[1], "r") as f:
+        import json
+        json_input = json.load(f)
+        rows = json_input["rows"]   
+        cols = json_input["cols"]
+        obstacles = json_input["obstacles"]
+
+game = Game(rows, cols, obstacles,20,300,(30, 30, 30),(50, 50, 50),(0, 255, 0),(255, 0, 0))
 game.start_game()
