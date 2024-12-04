@@ -37,8 +37,10 @@ class Board:
         self.create_head()
         self.tail = self.head
         self.tail.next = self.head  
-        
+            
     def set_direction(self, direction):
+        
+        valid = self.validate_direction(direction)
         
         if direction == "up" and self.direction[1] == 0:    
             self.direction = [0, -1]
@@ -48,7 +50,16 @@ class Board:
             self.direction = [-1, 0]
         elif direction == "right" and self.direction[0] == 0:
             self.direction = [1, 0]
-                
+            
+        return valid
+    
+    def validate_direction(self, direction):
+        if direction == "up" and self.direction[1] == 0 or\
+            direction == "down" and self.direction[1] == 0 or\
+            direction == "left" and self.direction[0] == 0 or\
+            direction == "right" and self.direction[0] == 0:
+            return True
+        return False
 
     def move(self):
         if self.direction == [0, 0]:
