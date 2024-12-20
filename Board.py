@@ -1,15 +1,37 @@
 import random
 
 class Board:
-        
+    """
+    A class to represent the logic of the game.
+    """
+    
     class Node:
-        def __init__(self, x, y, next = None) -> None:
+        """
+        A class to represent a node in the snake's body.
+        """
+        
+        def __init__(self, x, y, next=None) -> None:
+            """
+            Initialize a node with the given coordinates and next node.
+            
+            Args:
+                x (int): The x-coordinate.
+                y (int): The y-coordinate.
+                next (Node, optional): The next node. Defaults to None.
+            """
             self.x = x
             self.y = y
             self.next = next
 
     def __init__(self, rows, columns, obstacles) -> None:
+        """
+        Initialize the board with the given parameters.
         
+        Args:
+            rows (int): Number of rows in the board.
+            columns (int): Number of columns in the board.
+            obstacles (list): List of obstacles on the board.
+        """
         self.rows = rows
         self.columns = columns
         self.obstacles = obstacles
@@ -20,6 +42,9 @@ class Board:
         self.create_linked_list()
 
     def reset(self):
+        """
+        Reset the board to its initial state by recreating the board, placing food, and resetting the snake.
+        """
         self.create_board()
         self.place_food()
         self.snake_length = 1
@@ -27,26 +52,46 @@ class Board:
         self.direction = [0, 0]
     
     def create_board(self):
+        """
+        Create the game board matrix with obstacles.
         
+        0: Empty
+        1: Snake
+        2: Food
+        -1: Obstacle
+        
+        an obstacles is specified in the form of a tuple (y, x)
+        """
         self.matrix = [[0 for _ in range(self.columns)] for _ in range(self.rows)]
         
         for each_obstacle in self.obstacles:
-            self.matrix[each_obstacle[1]][each_obstacle[0]] = -1 # -1 for obstacles
-            
-        # -1 for obstacles, 0 for empty spaces, 1 for snake, 2 for food
+            self.matrix[each_obstacle[1]][each_obstacle[0]] = -1 
+        
 
     def create_head(self):
-
+        """
+        Create the head of the snake at the center of the board.
+        """
         self.head = self.Node(self.columns//2, self.rows//2)
 
     def create_linked_list(self):
-        
+        """
+        Create the linked list representing the snake's body with the head as the only node.
+        """
         self.create_head()
         self.tail = self.head
         self.tail.next = self.head  
             
     def set_direction(self, direction):
+        """
+        Set the direction of the snake's movement.
         
+        Args:
+            direction (str): The direction to set ('up', 'down', 'left', 'right').
+        
+        Returns:
+            bool: True if the direction is valid, False otherwise.
+        """
         valid = self.validate_direction(direction)
         
         if direction == "up" and self.direction[1] == 0:    
@@ -61,6 +106,15 @@ class Board:
         return valid
     
     def validate_direction(self, direction):
+        """
+        Validate the direction of the snake's movement.
+        
+        Args:
+            direction (str): The direction to validate ('up', 'down', 'left', 'right').
+        
+        Returns:
+            bool: True if the direction is valid, False otherwise.
+        """
         if direction == "up" and self.direction[1] == 0 or\
             direction == "down" and self.direction[1] == 0 or\
             direction == "left" and self.direction[0] == 0 or\
@@ -69,6 +123,12 @@ class Board:
         return False
 
     def move(self):
+        """
+        Move the snake on the board.
+        
+        Returns:
+            tuple: A tuple containing a boolean indicating if the game is over and a boolean indicating if food was eaten.
+        """
         if self.direction == [0, 0]:
             return False, None
         
@@ -99,7 +159,9 @@ class Board:
         return False, eaten
         
     def place_food(self):
-        
+        """
+        Place food on the board at a random empty position.
+        """
         while True:
             random_x = random.randint(0, self.columns - 1)
             random_y = random.randint(0, self.rows - 1)
