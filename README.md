@@ -1,3 +1,3 @@
-A nice looking implementation of the Snake game!
+An implementation of the Snake game!
 
 ![Demo](demo.gif)
